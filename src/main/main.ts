@@ -132,7 +132,6 @@ ipcMain.handle('request:set_media_folder', selectMediaFolder);
 ipcMain.on('request:get_media_folder', getMediaFolder);
 
 ipcMain.on('app:minimize', () => mainWindow?.minimize());
-
 ipcMain.on('app:quit', () => app.quit());
 
 app.on('window-all-closed', () => {
