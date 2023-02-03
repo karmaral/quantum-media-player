@@ -10,17 +10,14 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, protocol } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
+import Store from 'electron-store';
 import { resolveHtmlPath } from './util';
-import { cleanFilename } from './lib/media';
+import { cleanFilename, registerMediaProtocol } from './lib/media';
+
+const store = new Store<{ mediaFolder: string }>();
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -43,7 +40,8 @@ const getAssetPath = (...paths: string[]): string => {
 };
 
 function getMediaFiles(): string[] {
-  const mediaFolder = getAssetPath('media');
+  const mediaFolder = store.get('mediaFolder');
+  if (!mediaFolder) return [];
   const files = fs.readdirSync(mediaFolder);
   const cleanedPaths: string[] = [];
   try {
@@ -60,17 +58,31 @@ function getMediaFiles(): string[] {
   }
   return cleanedPaths;
 }
+function getMediaFolder(event: Electron.IpcMainEvent) {
+  event.returnValue = store.get('mediaFolder');
+}
 
-function registerMediaProtocol() {
-  protocol.registerFileProtocol('media', (request, callback) => {
-    const filePath = request.url.substring(7);
-    callback({ path: filePath });
-  });
+async function selectMediaFolder() {
+  const options: Electron.OpenDialogOptions = {
+    title: 'Select media folder',
+    properties: ['openDirectory'],
+    buttonLabel: 'Select',
+  };
+  try {
+    const { filePaths } = await dialog.showOpenDialog(
+      mainWindow as BrowserWindow,
+      options
+    );
+    console.log(filePaths);
+    store.set('mediaFolder', filePaths[0]);
+  } catch (e) {
+    console.log('Error setting the media folder path: ', e);
+  }
 }
 
 /* @TODO: fun things
  * [ ] total video duration (get-video-duration)
- * [ ] pick custom folder for media? (dont bundle)
+ * [x] pick custom folder for media? (dont bundle)
  */
 const createWindow = async () => {
   mainWindow = new BrowserWindow({
@@ -116,6 +128,8 @@ const createWindow = async () => {
  */
 
 ipcMain.handle('request:media_files', getMediaFiles);
+ipcMain.handle('request:set_media_folder', selectMediaFolder);
+ipcMain.on('request:get_media_folder', getMediaFolder);
 
 ipcMain.on('app:minimize', () => mainWindow?.minimize());
 

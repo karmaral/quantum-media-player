@@ -1,7 +1,12 @@
-import fs from 'fs';
-import path from 'path';
+import { protocol } from 'electron';
 
-// eslint-disable-next-line import/prefer-default-export
+export function registerMediaProtocol() {
+  protocol.registerFileProtocol('media', (request, callback) => {
+    const filePath = request.url.substring(7);
+    callback({ path: filePath });
+  });
+}
+
 export function cleanFilename(filename: string) {
   const split = filename.split('.');
   const ext = split.slice(-1);
