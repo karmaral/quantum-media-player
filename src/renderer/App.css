@@ -2,15 +2,22 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+@import './lib/fonts.css';
 
 :root {
   --topbar-height: 3rem;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   position: relative;
   height: 100vh;
-  font-family: sans-serif;
+  font-family: 'Noto Sans', system-ui, sans-serif;
   overflow-y: hidden;
   display: flex;
   justify-content: center;
@@ -38,6 +45,7 @@ button {
   all: unset;
   color: inherit;
   user-select: none;
+  font-family: inherit;
   cursor: pointer;
   padding: 0.5em 1em;
 }
