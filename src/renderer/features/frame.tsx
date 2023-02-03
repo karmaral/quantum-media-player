@@ -1,5 +1,6 @@
 import './frame.css';
 import { useEffect, useRef, useState, useCallback } from 'react';
+import Topbar from './topbar';
 
 interface FrameProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ export default function Frame(props: FrameProps) {
 
   return (
     <div className="app">
+      <Topbar />
       <main>{children}</main>
     </div>
   );

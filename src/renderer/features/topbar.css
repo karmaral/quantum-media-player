@@ -1,0 +1,31 @@
+.topbar {
+  width: 100%;
+  height: var(--topbar-height);
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: hsl(0 0% 0% / 5%);
+}
+
+.topbar-drag-zone {
+  -webkit-app-region: drag;
+  flex-grow: 1;
+}
+
+.topbar-btn {
+  padding: 0.25rem;
+  font-size: 1em;
+  min-width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar-btn:hover {
+  background-color: hsl(0 0% 100% / 10%);
+}
