@@ -39,7 +39,15 @@
   flex-direction: column;
   justify-content: center;
 }
-.slideshow .btn-skip {
+.slideshow .side-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slideshow .action-btn {
   height: 10%;
   font-size: 1.3em;
   display: flex;
@@ -47,9 +55,68 @@
   justify-content: center;
   opacity: 0.7;
 }
-.slideshow .btn-skip:hover {
+.slideshow .action-btn:hover {
   opacity: 1;
 }
+
+.options {
+  display: flex;
+  position: absolute;
+  height: calc(10% + 1em);
+  font-size: 1.3em;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+.options .options-btn {
+  height: auto;
+  position: relative;
+  flex-grow: 1;
+  font-size: inherit;
+  z-index: 1;
+}
+.options-menu {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  right: 100%;
+  bottom: 0%;
+  height: 200%;
+  font-size: 1rem;
+  background-color: hsl(0 0% 0% / 50%);
+  min-width: calc(12rem + 5vmax);
+  backdrop-filter: blur(4px);
+  transform: translate(1em);
+  transition: transform 0.3s, opacity 0.3s, visibility 0s;
+  transition-delay: 0s, 0s, 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 1.3em 1.3em rgb(0 0 0 / 50%);
+  border: 1px solid rgb(255 255 255 / 5%);
+}
+.options-menu.open {
+  transform: translate(0em);
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s, 0s, 0s;
+}
+.options-menu button {
+  padding: 0.8em 1em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em;
+  align-items: center;
+  font-weight: 300;
+}
+.options-menu button:hover {
+  backdrop-filter: none;
+}
+.options-menu button .desc {
+  flex-basis: 100%;
+  font-size: 70%;
+  opacity: 0.6;
+}
+
 .slideshow svg {
   filter: drop-shadow(0 0 1rem hsl(0 0% 0% / 0.9));
 }

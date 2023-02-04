@@ -1,12 +1,16 @@
 import React from 'react';
-import { IDataContext } from './types';
+import { IUIContext, IDataContext } from './types';
 
-const defaultContext: IDataContext = {
+const defaultUIContext: IUIContext = {
+  isIdle: false,
+  isFullscreen: false,
+  setIsFullscreen: () => undefined,
+};
+export const UIContext = React.createContext(defaultUIContext);
+
+const defaultDataContext: IDataContext = {
   mediaFiles: [],
   mediaFolder: '',
   selectMediaFolder: () => undefined,
 };
-
-const DataContext = React.createContext(defaultContext);
-
-export default DataContext;
+export const DataContext = React.createContext(defaultDataContext);

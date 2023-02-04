@@ -1,6 +1,6 @@
 import './App.css';
 import { useEffect, useState, useCallback } from 'react';
-import DataContext from './lib/context';
+import { DataContext } from './lib/context';
 import Frame from './features/frame';
 import SlideShow from './features/slideshow';
 

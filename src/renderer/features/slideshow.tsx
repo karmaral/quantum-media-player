@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { joinClasses } from '../lib/utils';
 import SlideShowActions from './slideshow-actions';
-import DataContext from '../lib/context';
+import { DataContext } from '../lib/context';
 
 async function fetchIndices(maxItems = 1): Promise<number[]> {
   const url = `https://qrng.anu.edu.au/API/jsonI.php?length=${maxItems}&type=uint8`;
@@ -45,7 +45,7 @@ function isVideo(path: string) {
  * [ ] listen to f11 fullscreen
  * [x] Loop if < 50s
  * [ ] Fade in/out anims?
- * [ ] refetch rng on depleted
+ * [ ] refetch/reshuffle on depleted
  */
 
 export default function SlideShow() {
@@ -54,6 +54,7 @@ export default function SlideShow() {
   const [allMediaPaths, setAllMediaPaths] = useState(mediaFiles);
   const [queuedMediaPaths, setQueuedMediaPaths] = useState(mediaFiles);
   const [currentMedia, setCurrentMedia] = useState('');
+  const [currentFolder, setCurrentFolder] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [loopTimes, setLoopTimes] = useState(0);
 
@@ -114,6 +115,14 @@ export default function SlideShow() {
   const src = `media://${currentMedia}`;
 
   useEffect(() => {
+    if (mediaFolder !== currentFolder) {
+      console.log('changed folder', mediaFolder, currentFolder);
+      setCurrentFolder(mediaFolder);
+      rawRNG.current = [];
+    }
+  }, [mediaFolder, currentFolder]);
+
+  useEffect(() => {
     if (mediaFiles.length) {
       setAllMediaPaths(mediaFiles);
       setQueuedMediaPaths(mediaFiles);
@@ -121,15 +130,18 @@ export default function SlideShow() {
   }, [mediaFiles]);
 
   useEffect(() => {
-    if (allMediaPaths.length && !rawRNG.current.length) {
-      console.log('init rawRNG');
-      const fetchData = async () => {
-        rawRNG.current = await fetchIndices(mediaFiles.length);
-        playNext();
-      };
-      fetchData();
+    const rngEmpty = !rawRNG.current.length;
+    if (allMediaPaths.length) {
+      if (rngEmpty) {
+        console.log('init rawRNG');
+        const fetchData = async () => {
+          rawRNG.current = await fetchIndices(allMediaPaths.length);
+          playNext();
+        };
+        fetchData();
+      }
     }
-  }, [allMediaPaths, mediaFiles.length, playNext]);
+  }, [allMediaPaths, playNext]);
 
   return (
     <div className={classes}>
@@ -155,6 +167,7 @@ export default function SlideShow() {
           </div>
         )}
         <SlideShowActions
+          mediaFolder={mediaFolder}
           currentMedia={currentMedia}
           isPlaying={isPlaying}
           setIsPlaying={setIsPlaying}

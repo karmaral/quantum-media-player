@@ -18,7 +18,7 @@ export default function Topbar() {
   };
   const handleQuit = () => window.api.app.quit();
 
-  const onFullScreenChange = useCallback((e) => {
+  const onFullScreenChange = useCallback((e: Event) => {
     console.log(e);
     setIsFullscreen(Boolean(document.fullscreenElement));
   }, []);
