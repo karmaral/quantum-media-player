@@ -42,21 +42,24 @@ const getAssetPath = (...paths: string[]): string => {
 function getMediaFiles(): string[] {
   const mediaFolder = store.get('mediaFolder');
   if (!mediaFolder) return [];
-  const files = fs.readdirSync(mediaFolder);
-  const cleanedPaths: string[] = [];
+  const files = fs.readdirSync(mediaFolder, { withFileTypes: true });
+  const validPaths: string[] = [];
   try {
     files.forEach((file) => {
-      const oldPath = path.join(mediaFolder, file);
-      const safeName = cleanFilename(file);
+      if (file.isDirectory()) return;
+      const oldPath = path.join(mediaFolder, file.name);
+      const safeName = cleanFilename(file.name);
       const newPath = path.join(mediaFolder, safeName);
-      fs.renameSync(oldPath, newPath);
-      cleanedPaths.push(newPath);
+      if (safeName !== file.name) {
+        fs.renameSync(oldPath, newPath);
+      }
+      validPaths.push(newPath);
       console.log(safeName);
     });
   } catch (e) {
     console.log(e);
   }
-  return cleanedPaths;
+  return validPaths;
 }
 function getMediaFolder(event: Electron.IpcMainEvent) {
   event.returnValue = store.get('mediaFolder');
@@ -75,9 +78,11 @@ async function selectMediaFolder() {
     );
     console.log(filePaths);
     store.set('mediaFolder', filePaths[0]);
+    return filePaths[0];
   } catch (e) {
     console.log('Error setting the media folder path: ', e);
   }
+  return undefined;
 }
 
 /* @TODO: fun things
