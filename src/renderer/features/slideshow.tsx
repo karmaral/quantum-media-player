@@ -2,8 +2,8 @@ import './slideshow.css';
 import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { joinClasses } from '../lib/utils';
-import SlideShowActions from './slideshow-actions';
-import { DataContext } from '../lib/context';
+import SlideshowActions from './slideshow-actions';
+import { DataContext, SlideshowContext } from '../lib/context';
 
 async function fetchIndices(maxItems = 1): Promise<number[]> {
   const url = `https://qrng.anu.edu.au/API/jsonI.php?length=${maxItems}&type=uint8`;
@@ -48,7 +48,7 @@ function isVideo(path: string) {
  * [ ] refetch/reshuffle on depleted
  */
 
-export default function SlideShow() {
+export default function Slideshow() {
   const { mediaFiles, mediaFolder } = useContext(DataContext);
 
   const [allMediaPaths, setAllMediaPaths] = useState(mediaFiles);
@@ -56,29 +56,26 @@ export default function SlideShow() {
   const [currentMedia, setCurrentMedia] = useState('');
   const [currentFolder, setCurrentFolder] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [loopTimes, setLoopTimes] = useState(0);
 
   const playerRef = useRef<ReactPlayer>();
-  const rawRNG = useRef<number[]>([]);
-  const nextIndices = useRef<number[]>([]);
+  const rngPool = useRef<number[]>([]);
 
   const classes = joinClasses(['slideshow', !isPlaying ? 'paused' : '']);
 
   const playNext = useCallback(async (): Promise<void> => {
     console.log('playNext', {
-      rawRNGLen: rawRNG.current.length,
+      rngPoolLen: rngPool.current.length,
       queuedMediaPaths,
       allMediaPaths,
     });
-    if (rawRNG.current.length < 2) {
-      rawRNG.current = await fetchIndices(allMediaPaths.length);
-    }
-    const nextIndex = rawRNG.current[0] % queuedMediaPaths.length || 0;
+    const nextIndex = rngPool.current[0] % queuedMediaPaths.length || 0;
     const nextMedia = queuedMediaPaths[nextIndex];
 
     if (!nextMedia) return undefined;
 
-    rawRNG.current.shift();
+    rngPool.current.shift();
 
     console.log({ nextIndex, nextMedia });
     if (!isImage(nextMedia) && !isVideo(nextMedia)) {
@@ -118,7 +115,7 @@ export default function SlideShow() {
     if (mediaFolder !== currentFolder) {
       console.log('changed folder', mediaFolder, currentFolder);
       setCurrentFolder(mediaFolder);
-      rawRNG.current = [];
+      rngPool.current = [];
     }
   }, [mediaFolder, currentFolder]);
 
@@ -130,12 +127,12 @@ export default function SlideShow() {
   }, [mediaFiles]);
 
   useEffect(() => {
-    const rngEmpty = !rawRNG.current.length;
+    const rngEmpty = !rngPool.current.length;
     if (allMediaPaths.length) {
       if (rngEmpty) {
-        console.log('init rawRNG');
+        console.log('init rngPool');
         const fetchData = async () => {
-          rawRNG.current = await fetchIndices(allMediaPaths.length);
+          rngPool.current = await fetchIndices(allMediaPaths.length);
           playNext();
         };
         fetchData();
@@ -154,7 +151,7 @@ export default function SlideShow() {
             width="100%"
             height="100%"
             url={src}
-            muted
+            muted={isMuted}
             playing={isPlaying}
             onDuration={handleDuration}
             onEnded={handleEnd}
@@ -166,13 +163,20 @@ export default function SlideShow() {
             <img src={src} alt="" />
           </div>
         )}
-        <SlideShowActions
-          mediaFolder={mediaFolder}
-          currentMedia={currentMedia}
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
-          playNext={playNext}
-        />
+        <SlideshowContext.Provider
+          value={{
+            currentMedia,
+            allMediaPaths,
+            queuedMediaPaths,
+            isMuted,
+            setIsMuted,
+            isPlaying,
+            setIsPlaying,
+            playNext,
+          }}
+        >
+          <SlideshowActions />
+        </SlideshowContext.Provider>
       </div>
     </div>
   );

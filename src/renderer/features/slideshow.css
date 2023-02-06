@@ -81,10 +81,9 @@
   flex-direction: column;
   right: 100%;
   bottom: 0%;
-  height: 200%;
   font-size: 1rem;
   background-color: hsl(0 0% 0% / 50%);
-  min-width: calc(12rem + 5vmax);
+  min-width: calc(14rem + 5vmax);
   backdrop-filter: blur(4px);
   transform: translate(1em);
   transition: transform 0.3s, opacity 0.3s, visibility 0s;
@@ -100,21 +99,46 @@
   visibility: visible;
   transition-delay: 0s, 0s, 0s;
 }
-.options-menu button {
+.options-menu .option-item {
   padding: 0.8em 1em;
   display: flex;
   flex-wrap: wrap;
   gap: 0.8em;
   align-items: center;
   font-weight: 300;
+  position: relative;
 }
-.options-menu button:hover {
+.options-menu .option-item:hover {
   backdrop-filter: none;
 }
-.options-menu button .desc {
+.options-menu .option-item:not(:last-child)::after {
+  content: '';
+  background-color: white;
+  opacity: 0.08;
+  display: flex;
+  width: calc(100% - 2em);
+  height: 1px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%);
+}
+.options-menu .option-item svg {
+  font-size: 1.1em;
+}
+.options-menu .option-item .desc {
   flex-basis: 100%;
   font-size: 70%;
   opacity: 0.6;
+}
+
+.options-menu .progress-bar {
+  width: 100%;
+  background-color: hsl(0 0% 0% / 0.2);
+}
+.options-menu .progress {
+  background-color: white;
+  height: 0.2rem;
 }
 
 .slideshow svg {

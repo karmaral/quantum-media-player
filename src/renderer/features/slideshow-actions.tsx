@@ -1,31 +1,13 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import { useEffect, useCallback, useContext } from 'react';
 import type { MouseEventHandler, KeyboardEventHandler } from 'react';
-import { RxShuffle, RxPlay, RxPause, RxDotsHorizontal } from 'react-icons/rx';
-import { MdOutlinePermMedia } from 'react-icons/md';
-import { UIContext, DataContext } from '../lib/context';
-import { joinClasses } from '../lib/utils';
+import { RxShuffle, RxPlay, RxPause } from 'react-icons/rx';
+import { DataContext, SlideshowContext } from '../lib/context';
+import Options from './options';
 
-interface SlideShowActionsProps {
-  isPlaying: boolean;
-  currentMedia: string;
-  playNext: () => Promise<void>;
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-  mediaFolder: string;
-}
-
-export default function SlideShowActions(props: SlideShowActionsProps) {
-  const { mediaFolder, currentMedia, isPlaying, playNext, setIsPlaying } =
-    props;
-
+export default function SlideshowActions() {
   const ctx = useContext(DataContext);
-  const { onIdle } = useContext(UIContext);
-
-  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-
-  const optionsClasses = joinClasses([
-    'options-menu',
-    isOptionsOpen ? 'open' : '',
-  ]);
+  const { currentMedia, playNext, isPlaying, setIsPlaying } =
+    useContext(SlideshowContext);
 
   const keyHandler = useCallback((e: KeyboardEvent) => {
     if (e.repeat) return;
@@ -33,10 +15,6 @@ export default function SlideShowActions(props: SlideShowActionsProps) {
       // exit fullscreen
     }
   }, []);
-
-  const addIdleListener = useCallback(() => {
-    onIdle(() => setIsOptionsOpen(false));
-  }, [onIdle]);
 
   const handlePlayback: MouseEventHandler<HTMLDivElement> = (e) => {
     setIsPlaying((prev) => !prev);
@@ -54,11 +32,6 @@ export default function SlideShowActions(props: SlideShowActionsProps) {
     playNext();
   };
 
-  const handleOptionsToggle: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.stopPropagation();
-    setIsOptionsOpen((prev) => !prev);
-  };
-
   const handleSelectFolder: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
     ctx.selectMediaFolder();
@@ -67,10 +40,6 @@ export default function SlideShowActions(props: SlideShowActionsProps) {
   useEffect(() => {
     document.addEventListener('keydown', keyHandler);
   }, [keyHandler]);
-
-  useEffect(() => {
-    addIdleListener();
-  }, [addIdleListener]);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
@@ -100,22 +69,7 @@ export default function SlideShowActions(props: SlideShowActionsProps) {
           >
             <RxShuffle />
           </button>
-          <div className="options">
-            <button
-              type="button"
-              className="action-btn options-btn"
-              onClick={handleOptionsToggle}
-            >
-              <RxDotsHorizontal />
-            </button>
-            <div className={optionsClasses}>
-              <button type="button" onClick={handleSelectFolder}>
-                <MdOutlinePermMedia />
-                Change media folder
-                <span className="desc">{mediaFolder}</span>
-              </button>
-            </div>
-          </div>
+          <Options />
         </div>
       </div>
     </div>

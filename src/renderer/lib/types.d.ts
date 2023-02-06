@@ -12,3 +12,14 @@ export interface IDataContext {
   mediaFolder: string;
   selectMediaFolder: () => void;
 }
+
+export interface ISlideshowContext {
+  isPlaying: boolean;
+  setIsPlaying: Dispatch<SetStateAction<boolean>>;
+  isMuted: boolean;
+  setIsMuted: Dispatch<SetStateAction<boolean>>;
+  currentMedia: string;
+  allMediaPaths: string[];
+  queuedMediaPaths: string[];
+  playNext: () => Promise<void>;
+}
