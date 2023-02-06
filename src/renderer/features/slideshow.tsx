@@ -143,8 +143,10 @@ export default function Slideshow() {
   return (
     <div className={classes}>
       <div className="content">
-        {!currentMedia && (
-          <p className="media-placeholder">Media not yet loaded</p>
+        {mediaFolder && !currentMedia && (
+          <p className="media-placeholder">
+            {!allMediaPaths.length ? 'No playable files found.' : 'Loading...'}
+          </p>
         )}
         {currentMedia && isVideo(currentMedia) && (
           <ReactPlayer

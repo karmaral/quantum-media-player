@@ -1,6 +1,13 @@
 @font-face {
   font-family: 'Noto Sans';
   font-style: normal;
+  font-weight: 400;
+  src: local('Noto Sans'), local('NotoSans'),
+    url('../../../assets/fonts/NotoSans-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
   font-weight: 300;
   src: local('Noto Sans'), local('NotoSans'),
     url('../../../assets/fonts/NotoSans-Light.ttf') format('truetype');
