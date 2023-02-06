@@ -1,7 +1,7 @@
 import './slideshow.css';
 import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { joinClasses } from '../lib/utils';
+import { joinClasses, isVideo, isImage } from '../lib/utils';
 import SlideshowActions from './slideshow-actions';
 import { DataContext, SlideshowContext } from '../lib/context';
 
@@ -17,22 +17,18 @@ async function fetchIndices(maxItems = 1): Promise<number[]> {
   console.log('PSRNG', pseudoRnd);
   return [pseudoRnd];
 }
+function compare(a: string[], b: string[]) {
+  if (a.length !== b.length) return false;
+  const elems = new Set([...a, ...b]);
 
-function isImage(path: string) {
-  const formats = ['jpg', 'jpeg', 'png'];
   // eslint-disable-next-line no-restricted-syntax
-  for (const fmt of formats) {
-    if (path?.endsWith(`.${fmt}`)) return true;
+  for (const x of elems) {
+    const countA = a.filter((e) => e === x).length;
+    const countB = b.filter((e) => e === x).length;
+    if (countA !== countB) return false;
   }
-  return false;
-}
-function isVideo(path: string) {
-  const formats = ['mp4'];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const fmt of formats) {
-    if (path?.endsWith(`.${fmt}`)) return true;
-  }
-  return false;
+
+  return true;
 }
 
 /* @TODO:
@@ -45,7 +41,7 @@ function isVideo(path: string) {
  * [ ] listen to f11 fullscreen
  * [x] Loop if < 50s
  * [ ] Fade in/out anims?
- * [ ] refetch/reshuffle on depleted
+ * [x] refetch/reshuffle on depleted
  */
 
 export default function Slideshow() {
@@ -81,7 +77,9 @@ export default function Slideshow() {
     if (!isImage(nextMedia) && !isVideo(nextMedia)) {
       return playNext();
     }
-    setQueuedMediaPaths(queuedMediaPaths.filter((p) => p !== nextMedia));
+    const filtered = queuedMediaPaths.filter((p) => p !== nextMedia);
+    const nextQueue = filtered.length ? filtered : allMediaPaths;
+    setQueuedMediaPaths(nextQueue);
     setCurrentMedia(nextMedia);
     setIsPlaying(true);
     return undefined;
