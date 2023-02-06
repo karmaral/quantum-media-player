@@ -39,8 +39,15 @@ const getAssetPath = (...paths: string[]): string => {
   return path.join(RESOURCES_PATH, ...paths);
 };
 
+const getValidMediaFolder = (): string => {
+  const stored = store.get('mediaFolder');
+  if (fs.existsSync(stored)) return stored;
+  store.set('mediaFolder', '');
+  return '';
+};
+
 function getMediaFiles(): string[] {
-  const mediaFolder = store.get('mediaFolder');
+  const mediaFolder = getValidMediaFolder();
   if (!mediaFolder) return [];
   const files = fs.readdirSync(mediaFolder, { withFileTypes: true });
   const validPaths: string[] = [];
@@ -62,7 +69,8 @@ function getMediaFiles(): string[] {
   return validPaths;
 }
 function getMediaFolder(event: Electron.IpcMainEvent) {
-  event.returnValue = store.get('mediaFolder');
+  const mediaFolder = getValidMediaFolder();
+  event.returnValue = mediaFolder;
 }
 
 async function selectMediaFolder() {
