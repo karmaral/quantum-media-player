@@ -3,12 +3,19 @@ import type { MouseEventHandler, KeyboardEventHandler } from 'react';
 import { RxShuffle, RxPlay, RxPause } from 'react-icons/rx';
 import { IoFilmOutline } from 'react-icons/io5';
 import { DataContext, SlideshowContext } from '../lib/context';
+import { joinClasses } from '../lib/utils';
 import Options from './options';
 
 export default function SlideshowActions() {
   const ctx = useContext(DataContext);
   const { currentMedia, playNext, isPlaying, setIsPlaying } =
     useContext(SlideshowContext);
+
+  const skipClasses = joinClasses([
+    'action-btn',
+    'btn-skip',
+    !ctx.mediaFolder ? 'disabled' : '',
+  ]);
 
   const keyHandler = useCallback((e: KeyboardEvent) => {
     if (e.repeat) return;
@@ -64,11 +71,7 @@ export default function SlideshowActions() {
       )}
       <div className="side">
         <div className="side-wrapper">
-          <button
-            type="button"
-            className="action-btn btn-skip"
-            onClick={handleSkip}
-          >
+          <button type="button" className={skipClasses} onClick={handleSkip}>
             <RxShuffle />
           </button>
           <Options />

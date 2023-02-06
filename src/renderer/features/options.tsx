@@ -23,9 +23,16 @@ export default function Options() {
     const { length: all } = allMediaPaths;
     const { length: queued } = queuedMediaPaths;
     if (type === 'width') {
+      if (!all) return '0%';
       return `${((all - queued) / all) * 100}%`;
     }
-    return `${all - queued} / ${all} played`;
+    if (type === 'label') {
+      if (!all) {
+        return 'No files loaded';
+      }
+      return `${all - queued} / ${all} played`;
+    }
+    return '';
   };
 
   const handleOptionsToggle: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -64,12 +71,14 @@ export default function Options() {
       <div className={menuClasses}>
         <div className="option-item">
           Progress
-          <div className="progress-bar">
-            <div
-              className="progress"
-              style={{ width: calcProgress('width') }}
-            />
-          </div>
+          {Boolean(allMediaPaths.length) && (
+            <div className="progress-bar">
+              <div
+                className="progress"
+                style={{ width: calcProgress('width') }}
+              />
+            </div>
+          )}
           <span className="desc">{calcProgress('label')}</span>
         </div>
         <button
@@ -86,8 +95,8 @@ export default function Options() {
           onClick={handleSelectFolder}
         >
           <IoFilmOutline />
-          Change Media Folder
-          <span className="desc">{mediaFolder}</span>
+          Change media folder
+          {mediaFolder && <span className="desc">{mediaFolder}</span>}
         </button>
       </div>
     </div>

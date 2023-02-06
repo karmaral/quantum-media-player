@@ -70,6 +70,10 @@
 .slideshow .action-btn:hover {
   opacity: 1;
 }
+.slideshow .action-btn.disabled {
+  pointer-events: none;
+  opacity: 0.3 !important;
+}
 
 .options {
   display: flex;
@@ -112,6 +116,7 @@
   transition-delay: 0s, 0s, 0s;
 }
 .options-menu .option-item {
+  user-select: none;
   padding: 0.8em 1em;
   display: flex;
   flex-wrap: wrap;
