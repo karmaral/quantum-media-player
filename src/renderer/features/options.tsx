@@ -6,8 +6,8 @@ import {
   IoVolumeMuteOutline,
   IoVolumeHighOutline,
 } from 'react-icons/io5';
-import { DataContext, UIContext, SlideshowContext } from '../lib/context';
-import { joinClasses } from '../lib/utils';
+import { DataContext, UIContext, SlideshowContext } from '$lib/context';
+import { joinClasses } from '$lib/utils';
 
 export default function Options() {
   const [optionsOpen, setOptionsOpen] = useState(false);

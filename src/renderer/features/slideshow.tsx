@@ -1,9 +1,9 @@
 import './slideshow.css';
 import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { joinClasses, isVideo, isImage } from '../lib/utils';
+import { joinClasses, isVideo, isImage } from '$lib/utils';
+import { DataContext, SlideshowContext } from '$lib/context';
 import SlideshowActions from './slideshow-actions';
-import { DataContext, SlideshowContext } from '../lib/context';
 
 async function fetchIndices(maxItems = 1): Promise<number[]> {
   const url = `https://qrng.anu.edu.au/API/jsonI.php?length=${maxItems}&type=uint8`;

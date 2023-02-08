@@ -1,8 +1,8 @@
 import './App.css';
 import { useEffect, useState, useCallback } from 'react';
-import { DataContext } from './lib/context';
-import Frame from './features/frame';
-import Slideshow from './features/slideshow';
+import { DataContext } from '$lib/context';
+import Frame from '$features/frame';
+import Slideshow from '$features/slideshow';
 
 export default function App() {
   const [mediaFolder, setMediaFolder] = useState<string>('');

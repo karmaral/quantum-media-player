@@ -1,6 +1,6 @@
 import './frame.css';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { UIContext } from '../lib/context';
+import { UIContext } from '$lib/context';
 import Topbar from './topbar';
 
 interface FrameProps {

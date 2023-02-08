@@ -2,8 +2,8 @@ import { useEffect, useCallback, useContext } from 'react';
 import type { MouseEventHandler, KeyboardEventHandler } from 'react';
 import { RxShuffle, RxPlay, RxPause } from 'react-icons/rx';
 import { IoFilmOutline } from 'react-icons/io5';
-import { DataContext, SlideshowContext } from '../lib/context';
-import { joinClasses } from '../lib/utils';
+import { DataContext, SlideshowContext } from '$lib/context';
+import { joinClasses } from '$lib/utils';
 import Options from './options';
 
 export default function SlideshowActions() {
