@@ -13,8 +13,6 @@ export function cleanFilename(filename: string) {
   const name = split
     .slice(0, -1)
     .join('-')
-    .replace(/ /g, '-')
-    .replace(/[^a-zA-Z0-9-_]+/g, '')
-    .replace(/---+/g, '--');
+    .replace(/[^a-zA-Z0-9-_ ]+/g, '');
   return `${name}.${ext}`;
 }
