@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "quantum-media-player",
+  "version": "0.1.0",
+  "description": "A simple media player that uses quantum RNG to shuffle the files",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Amaral Krichman",
+    "email": "amaralkrichman@gmail.com",
+    "url": "https://github.com/karmaral"
   },
   "main": "./dist/main/main.js",
   "scripts": {
