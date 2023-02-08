@@ -1,37 +1,28 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "name": "quantum-media-player",
+  "version": "0.1.0",
+  "description": "A simple media player that uses quantum RNG to shuffle the files",
   "keywords": [
     "electron",
-    "boilerplate",
     "react",
     "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "media-player",
+    "quantum-randomness"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/karmaral/quantum-media-player#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/karmaral/quantum-media-playe/rissues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/karmaral/quantum-media-player.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Amaral Krichman",
+    "email": "amaralkrichman@gmail.com",
+    "url": "https://github.com/karmaral"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -115,8 +106,8 @@
     "electron-updater": "^5.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-player": "^2.11.0",
-    "react-icons": "^4.7.1"
+    "react-icons": "^4.7.1",
+    "react-player": "^2.11.0"
   },
   "devDependencies": {
     "@electron/notarize": "^1.2.3",
@@ -188,8 +179,8 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "Quantum Media Player",
+    "appId": "app.karmaral.QuantumMediaPlayer",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -247,12 +238,9 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "karmaral",
+      "repo": "quantum-media-player"
     }
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "devEngines": {
     "node": ">=14.x",
