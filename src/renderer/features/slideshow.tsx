@@ -158,7 +158,7 @@ export default function Slideshow() {
           />
         )}
         {currentMedia && isImage(currentMedia) && (
-          <div>
+          <div className={cls.imageFrame}>
             <img src={src} alt="" />
           </div>
         )}
