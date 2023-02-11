@@ -1,0 +1,24 @@
+.slideshow {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.content {
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+}
+
+.slideshow svg {
+  filter: drop-shadow(0 0 1rem hsl(0 0% 0% / 0.9));
+}
+
+.placeHolder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+}

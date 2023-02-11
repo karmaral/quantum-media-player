@@ -4,6 +4,7 @@ import { RxShuffle, RxPlay, RxPause } from 'react-icons/rx';
 import { IoFilmOutline } from 'react-icons/io5';
 import { DataContext, SlideshowContext } from '$lib/context';
 import { joinClasses } from '$lib/utils';
+import cls from './slideshow-actions.module.css';
 import Options from './options';
 
 export default function SlideshowActions() {
@@ -12,8 +13,7 @@ export default function SlideshowActions() {
     useContext(SlideshowContext);
 
   const skipClasses = joinClasses([
-    'action-btn',
-    'btn-skip',
+    cls.actionBtn,
     !ctx.mediaFolder ? 'disabled' : '',
   ]);
 
@@ -52,25 +52,25 @@ export default function SlideshowActions() {
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="actions fades-on-idle"
+      className={joinClasses([cls.actions, 'fades-on-idle'])}
       onClick={handlePlayback}
       onKeyDown={handlePlaybackKeydown}
     >
       {currentMedia && (
-        <div className="icon-paused">{!isPlaying && <RxPlay />}</div>
+        <div className={cls.iconPaused}>{!isPlaying && <RxPlay />}</div>
       )}
       {!ctx.mediaFolder && (
         <button
           type="button"
-          className="btn-select-folder"
+          className={cls.btnSelectFolder}
           onClick={handleSelectFolder}
         >
           <IoFilmOutline size="4em" />
           Select media folder
         </button>
       )}
-      <div className="side">
-        <div className="side-wrapper">
+      <div className={cls.side}>
+        <div className={cls.sideWrapper}>
           <button type="button" className={skipClasses} onClick={handleSkip}>
             <RxShuffle />
           </button>

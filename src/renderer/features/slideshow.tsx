@@ -1,8 +1,8 @@
-import './slideshow.css';
 import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { joinClasses, isVideo, isImage } from '$lib/utils';
 import { DataContext, SlideshowContext } from '$lib/context';
+import cls from './slideshow.module.css';
 import SlideshowActions from './slideshow-actions';
 
 async function fetchIndices(maxItems = 1): Promise<number[]> {
@@ -58,7 +58,7 @@ export default function Slideshow() {
   const playerRef = useRef<ReactPlayer>();
   const rngPool = useRef<number[]>([]);
 
-  const classes = joinClasses(['slideshow', !isPlaying ? 'paused' : '']);
+  const classes = joinClasses([cls.slideshow, !isPlaying ? 'paused' : '']);
 
   const playNext = useCallback(async (): Promise<void> => {
     console.log('playNext', {
@@ -140,9 +140,9 @@ export default function Slideshow() {
 
   return (
     <div className={classes}>
-      <div className="content">
+      <div className={cls.content}>
         {mediaFolder && !currentMedia && (
-          <p className="media-placeholder">
+          <p className={cls.placeHolder}>
             {!allMediaPaths.length ? 'No playable files found.' : 'Loading...'}
           </p>
         )}

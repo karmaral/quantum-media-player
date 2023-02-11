@@ -8,6 +8,7 @@ import {
 } from 'react-icons/io5';
 import { DataContext, UIContext, SlideshowContext } from '$lib/context';
 import { joinClasses } from '$lib/utils';
+import cls from './options.module.css';
 
 export default function Options() {
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function Options() {
   const { isMuted, setIsMuted, allMediaPaths, queuedMediaPaths } =
     useContext(SlideshowContext);
 
-  const menuClasses = joinClasses(['options-menu', optionsOpen ? 'open' : '']);
+  const menuClasses = joinClasses([cls.optionsMenu, optionsOpen ? 'open' : '']);
 
   const calcProgress = (type: 'label' | 'width' = 'label') => {
     const { length: all } = allMediaPaths;
@@ -55,35 +56,34 @@ export default function Options() {
   }, [onIdle]);
 
   useEffect(() => {
-    console.log('registering onIdle');
     addIdleListener();
   }, [addIdleListener]);
 
   return (
-    <div className="options">
+    <div className={cls.options}>
       <button
         type="button"
-        className="action-btn options-btn"
+        className={joinClasses([cls.actionBtn, cls.optionsBtn])}
         onClick={handleOptionsToggle}
       >
         <RxDotsHorizontal />
       </button>
       <div className={menuClasses}>
-        <div className="option-item">
+        <div className={cls.optionItem}>
           Progress
           {Boolean(allMediaPaths.length) && (
-            <div className="progress-bar">
+            <div className={cls.progressBar}>
               <div
-                className="progress"
+                className={cls.progress}
                 style={{ width: calcProgress('width') }}
               />
             </div>
           )}
-          <span className="desc">{calcProgress('label')}</span>
+          <span className={cls.desc}>{calcProgress('label')}</span>
         </div>
         <button
           type="button"
-          className="option-item"
+          className={cls.optionItem}
           onClick={handleVolumeToggle}
         >
           {isMuted ? <IoVolumeMuteOutline /> : <IoVolumeHighOutline />}
@@ -91,12 +91,12 @@ export default function Options() {
         </button>
         <button
           type="button"
-          className="option-item"
+          className={cls.optionItem}
           onClick={handleSelectFolder}
         >
           <IoFilmOutline />
           Change media folder
-          {mediaFolder && <span className="desc">{mediaFolder}</span>}
+          {mediaFolder && <span className={cls.desc}>{mediaFolder}</span>}
         </button>
       </div>
     </div>

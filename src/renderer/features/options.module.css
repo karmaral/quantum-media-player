@@ -1,0 +1,88 @@
+.options {
+  display: flex;
+  position: absolute;
+  height: calc(10% + 1em);
+  font-size: 1.3em;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+.actionBtn {
+  composes: actionBtn from './slideshow-actions.module.css';
+}
+.optionsBtn {
+  height: auto;
+  position: relative;
+  flex-grow: 1;
+  font-size: inherit;
+  z-index: 1;
+}
+.optionsMenu {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  right: 100%;
+  bottom: 0%;
+  font-size: 1rem;
+  background-color: hsl(0 0% 0% / 50%);
+  min-width: calc(14rem + 5vmax);
+  backdrop-filter: blur(4px);
+  transform: translate(1em);
+  transition: transform 0.3s, opacity 0.3s, visibility 0s;
+  transition-delay: 0s, 0s, 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 1.3em 1.3em rgb(0 0 0 / 50%);
+  border: 1px solid rgb(255 255 255 / 5%);
+}
+
+.optionsMenu:global(.open) {
+  transform: translate(0em);
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s, 0s, 0s;
+}
+
+.optionItem {
+  user-select: none;
+  padding: 0.8em 1em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em;
+  align-items: center;
+  font-weight: 300;
+  position: relative;
+}
+
+.optionItem:hover {
+  backdrop-filter: none;
+}
+.optionItem:not(:last-child)::after {
+  content: '';
+  background-color: white;
+  opacity: 0.08;
+  display: flex;
+  width: calc(100% - 2em);
+  height: 1px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%);
+}
+.optionItem svg {
+  font-size: 1.1em;
+}
+.desc {
+  flex-basis: 100%;
+  font-size: 70%;
+  opacity: 0.6;
+}
+
+.progressBar {
+  width: 100%;
+  background-color: hsl(0 0% 0% / 0.2);
+}
+.progress {
+  background-color: white;
+  height: 0.2rem;
+}
