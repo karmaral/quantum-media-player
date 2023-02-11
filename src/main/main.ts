@@ -13,6 +13,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import Store from 'electron-store';
 import { resolveHtmlPath } from './util';
+import { isImage, isVideo } from '../shared/utils';
 import { cleanFilename, registerMediaProtocol } from './lib/media';
 
 const store = new Store<{ mediaFolder: string }>();
@@ -54,6 +55,7 @@ function getMediaFiles(): string[] {
   try {
     files.forEach((file) => {
       if (file.isDirectory()) return;
+      if (!isImage(file.name) && !isVideo(file.name)) return;
       const oldPath = path.join(mediaFolder, file.name);
       const safeName = cleanFilename(file.name);
       const newPath = path.join(mediaFolder, safeName);

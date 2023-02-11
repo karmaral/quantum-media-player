@@ -1,6 +1,7 @@
 import ReactPlayer from 'react-player';
 import { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { joinClasses, isVideo, isImage } from '$lib/utils';
+import { isImage, isVideo } from 'shared/utils';
+import { joinClasses } from '$lib/utils';
 import { DataContext, SlideshowContext } from '$lib/context';
 import cls from './slideshow.module.css';
 import SlideshowActions from './slideshow-actions';
@@ -14,7 +15,7 @@ async function fetchIndices(maxItems = 1): Promise<number[]> {
     return json.data;
   }
   const pseudoRnd = Math.floor(Math.random() * maxItems);
-  console.log('PSRNG', pseudoRnd);
+  console.log('PRNG', pseudoRnd);
   return [pseudoRnd];
 }
 function compare(a: string[], b: string[]) {
@@ -74,9 +75,7 @@ export default function Slideshow() {
     rngPool.current.shift();
 
     console.log({ nextIndex, nextMedia });
-    if (!isImage(nextMedia) && !isVideo(nextMedia)) {
-      return playNext();
-    }
+
     const filtered = queuedMediaPaths.filter((p) => p !== nextMedia);
     const nextQueue = filtered.length ? filtered : allMediaPaths;
     setQueuedMediaPaths(nextQueue);
