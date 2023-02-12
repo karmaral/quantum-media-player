@@ -56,6 +56,7 @@ export default function Slideshow() {
   const [isMuted, setIsMuted] = useState(true);
   const [loopTimes, setLoopTimes] = useState(0);
 
+  const isFetching = useRef(false);
   const playerRef = useRef<ReactPlayer>();
   const rngPool = useRef<number[]>([]);
 
@@ -127,12 +128,15 @@ export default function Slideshow() {
     const rngEmpty = !rngPool.current.length;
     if (allMediaPaths.length) {
       if (rngEmpty) {
-        console.log('init rngPool');
         const fetchData = async () => {
+          isFetching.current = true;
           rngPool.current = await fetchIndices(allMediaPaths.length);
+          isFetching.current = false;
           playNext();
         };
-        fetchData();
+        if (!isFetching.current) {
+          fetchData();
+        }
       }
     }
   }, [allMediaPaths, playNext]);
