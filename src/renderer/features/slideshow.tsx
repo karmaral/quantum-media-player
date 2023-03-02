@@ -18,19 +18,6 @@ async function fetchIndices(maxItems = 1): Promise<number[]> {
   console.log('PRNG', pseudoRnd);
   return [pseudoRnd];
 }
-function compare(a: string[], b: string[]) {
-  if (a.length !== b.length) return false;
-  const elems = new Set([...a, ...b]);
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const x of elems) {
-    const countA = a.filter((e) => e === x).length;
-    const countB = b.filter((e) => e === x).length;
-    if (countA !== countB) return false;
-  }
-
-  return true;
-}
 
 /* @TODO:
  * [x] dont repeat videos until all played
@@ -60,58 +47,76 @@ export default function Slideshow() {
   const playerRef = useRef<ReactPlayer>();
   const rngPool = useRef<number[]>([]);
 
+  const imageTimer = useRef<NodeJS.Timer | undefined>();
+  const [imageSlideState, setImageSlideState] = useState({
+    initial: 0,
+    remaining: 0,
+  });
+
   const classes = joinClasses([cls.slideshow, !isPlaying ? 'paused' : '']);
 
-  const playNext = useCallback(async (): Promise<void> => {
-    console.log('playNext', {
-      rngPoolLen: rngPool.current.length,
-      queuedMediaPaths,
-      allMediaPaths,
+  const IMAGE_SLIDE_DURATION = 60 * 1000;
+
+  const playImage = useCallback(() => {
+    imageTimer.current = clearTimeout(imageTimer.current) as undefined;
+    const remaining = IMAGE_SLIDE_DURATION;
+    setImageSlideState({
+      initial: Date.now(),
+      remaining,
     });
-    const nextIndex = rngPool.current[0] % queuedMediaPaths.length || 0;
-    const nextMedia = queuedMediaPaths[nextIndex];
+  }, [IMAGE_SLIDE_DURATION]);
 
-    if (!nextMedia) return undefined;
+  const playNext = useCallback(
+    async (looping = false): Promise<void> => {
+      console.log('playNext', {
+        rngPoolLen: rngPool.current.length,
+        queuedMediaPaths,
+        allMediaPaths,
+      });
 
-    rngPool.current.shift();
+      if (looping && loopTimes !== 0) {
+        setLoopTimes((prev) => prev - 1);
+        playerRef.current?.seekTo(0);
+        return undefined;
+      }
 
-    console.log({ nextIndex, nextMedia });
+      const nextIndex = rngPool.current[0] % queuedMediaPaths.length || 0;
+      const nextMedia = queuedMediaPaths[nextIndex];
+      if (!nextMedia) return undefined;
 
-    const filtered = queuedMediaPaths.filter((p) => p !== nextMedia);
-    const nextQueue = filtered.length ? filtered : allMediaPaths;
-    setQueuedMediaPaths(nextQueue);
-    setCurrentMedia(nextMedia);
-    setIsPlaying(true);
-    return undefined;
-  }, [allMediaPaths, queuedMediaPaths]);
+      rngPool.current.shift();
+
+      console.log({ nextIndex, nextMedia });
+
+      const filtered = queuedMediaPaths.filter((p) => p !== nextMedia);
+      const nextQueue = filtered.length ? filtered : allMediaPaths;
+      setQueuedMediaPaths(nextQueue);
+      setCurrentMedia(nextMedia);
+
+      if (isImage(nextMedia)) {
+        playImage();
+      }
+
+      setIsPlaying(true);
+      return undefined;
+    },
+    [allMediaPaths, queuedMediaPaths, playImage, loopTimes]
+  ); // react pls
 
   const handleDuration = (duration: number) => {
     let times = 0;
     if (duration < 5) {
-      times = 3;
+      times = 2;
     } else if (duration < 50) {
       times = Math.ceil(40 / duration);
     }
-    console.log(`${duration} x ${times}`);
     setLoopTimes(times);
-  };
-
-  const handleEnd = () => {
-    console.log('onEnd');
-    if (loopTimes !== 0) {
-      console.log(`looping: ${loopTimes}`);
-      setLoopTimes((prev) => prev - 1);
-      playerRef.current?.seekTo(0);
-      return;
-    }
-    playNext();
   };
 
   const src = `media://${currentMedia}`;
 
   useEffect(() => {
     if (mediaFolder !== currentFolder) {
-      console.log('changed folder', mediaFolder, currentFolder);
       setCurrentFolder(mediaFolder);
       rngPool.current = [];
     }
@@ -141,6 +146,25 @@ export default function Slideshow() {
     }
   }, [allMediaPaths, playNext]);
 
+  useEffect(() => {
+    if (isImage(currentMedia)) {
+      if (!isPlaying) {
+        imageTimer.current = clearTimeout(imageTimer.current) as undefined;
+        console.log(`isPlaying: ${isPlaying}`, imageTimer.current);
+        setImageSlideState((prev) => {
+          const ellapsed = Date.now() - prev.initial;
+          const remaining = prev.remaining - ellapsed;
+          return { ...prev, remaining };
+        });
+      } else {
+        console.log(`isPlaying: ${isPlaying}`, imageTimer.current);
+        imageTimer.current = setTimeout(playNext, imageSlideState.remaining);
+      }
+    }
+
+    return () => clearTimeout(imageTimer.current);
+  }, [isPlaying, currentMedia, imageSlideState, playNext]);
+
   return (
     <div className={classes}>
       <div className={cls.content}>
@@ -157,7 +181,7 @@ export default function Slideshow() {
             muted={isMuted}
             playing={isPlaying}
             onDuration={handleDuration}
-            onEnded={handleEnd}
+            onEnded={() => playNext(true)}
             ref={playerRef as React.LegacyRef<ReactPlayer>}
           />
         )}

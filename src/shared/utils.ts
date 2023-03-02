@@ -1,7 +1,8 @@
 function isFileType(path: string, formats: string[]) {
+  if (!path) return false;
   // eslint-disable-next-line no-restricted-syntax
   for (const fmt of formats) {
-    if (path?.endsWith(`.${fmt}`)) return true;
+    if (path.endsWith(`.${fmt}`)) return true;
   }
   return false;
 }
